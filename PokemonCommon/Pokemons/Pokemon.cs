@@ -53,7 +53,7 @@ namespace PokemonCommon.Pokemons
         }
 
         // Detta är ytterligare en konstruktor, denna gång med parametrar. En klass kan ha 0 ... n konstruktorer, bara alla har olika signatur.
-        public Pokemon(string name, PokeTypes[] types)
+        public Pokemon(string name, params PokeTypes[] types)
         {
             _name = name;
             _types = types.ToList();
