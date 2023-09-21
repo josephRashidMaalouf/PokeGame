@@ -20,6 +20,5 @@ Console.WriteLine("--------------------------");
 
 Console.WriteLine(sobble.HealthPoints);
 
-BattleEngine.MakeAttack(sobble, charmander.Attacks[0]);
-
-Console.WriteLine(sobble.HealthPoints);
+BattleEngine.MakeAttack(sobble, charmander.Attacks[0], charmander.Name);
+BattleEngine.MakeAttack(charmander, sobble.Attacks[0], sobble.Name);
