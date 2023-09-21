@@ -1,18 +1,77 @@
 ﻿using PokemonCommon.Enums;
 using PokemonCommon.Pokemons;
 using PokemonCommon.Pokemons.Attacks;
+using System.Data;
 
 namespace PokemonCommon;
 
 public static class BattleEngine
 {
-    // Detta är en statisk metod. Statiska metoder anropas via typen och inte via objekt.
+    public static void BattleSimulation(Pokemon firstMon, Pokemon secondMon)
+    {
+        
+        (Pokemon attacker, Pokemon defender) roles = (firstMon,  secondMon);
+        int roundTracker = 1;
+        while (firstMon.HealthPoints > 0 && secondMon.HealthPoints > 0)
+        {
+            
+
+            Console.WriteLine($"->[Round.{roundTracker}: {firstMon.Name} HP: {firstMon.HealthPoints} || {secondMon.Name} HP: {secondMon.HealthPoints}]<-");
+            roundTracker++;
+
+            Attack randomAttack = PickRandomAttack(roles.attacker);
+
+            double monHp = roles.defender.HealthPoints;
+            MakeAttack(roles.defender, randomAttack, roles.attacker.Name);
+
+            double damage = monHp - roles.defender.HealthPoints;
+            
+
+             roles = RoleSwitcher(roles.attacker, roles.defender);
+             Console.WriteLine("\n");
+        }
+        Console.WriteLine($"->[Round.{roundTracker}: {firstMon.Name} HP: {firstMon.HealthPoints} || {secondMon.Name} HP: {secondMon.HealthPoints}]<-");
+        if (firstMon.HealthPoints > secondMon.HealthPoints)
+        {
+            Console.WriteLine($"{firstMon.Name} destroyed {secondMon.Name}");
+        }
+        else
+        {
+            Console.WriteLine($"{secondMon.Name} destroyed {firstMon.Name}");
+        }
+
+    }
+
+    private static Attack PickRandomAttack(Pokemon attacker)
+    {
+        int numberOfAttacks = 0;
+        foreach (Attack attack in attacker.Attacks)
+        {
+            if (attack != null)
+            {
+                numberOfAttacks++;
+            }
+        }
+        Random rnd = new Random();
+        int randomAttackIndex = rnd.Next(0, numberOfAttacks);
+
+        return attacker.Attacks[randomAttackIndex];
+    }
+
+    private static (Pokemon attacker, Pokemon defender) RoleSwitcher(Pokemon attacker, Pokemon defender)
+    {
+        (Pokemon attacker, Pokemon defender) roles = (defender, attacker);
+
+        return roles;
+    }
+
+
     public static void MakeAttack(Pokemon target, Attack attack, string attacker)
     {
         Effectiveness effectiveness = CheckEffectiveness(attack.Type, target.Types.ToArray());
-        
-        BattleUi.DisplayDamageEffectiveness(effectiveness, attack.Name, attacker);
-        
+
+        BattleUi.DisplayDammageEffectiveness(effectiveness, attack.Name, attacker);
+
         double modifier = (double)effectiveness / 100.0;
 
         target.HealthPoints -= attack.Damage * modifier;
